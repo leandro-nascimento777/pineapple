@@ -1,7 +1,7 @@
 import type { Bug } from '../entities/Bug'
 import type { IBugRepository } from '../repositories/IBugRepository'
 
-/** Dev assume o bug: sai da fila (aberto) e entra em análise (em_tratamento). */
+/** Staff assume o bug: sai da fila (aberto) e entra em análise (em_tratamento). */
 export class AssumeBug {
   private readonly bugRepository: IBugRepository
 
@@ -9,7 +9,7 @@ export class AssumeBug {
     this.bugRepository = bugRepository
   }
 
-  execute(bugId: string): Promise<Bug> {
-    return this.bugRepository.assume(bugId)
+  execute(bugId: string, assumidoPor: string): Promise<Bug> {
+    return this.bugRepository.assume(bugId, assumidoPor)
   }
 }

@@ -2,7 +2,6 @@ import type { Company } from '../entities/Company'
 
 export interface CreateCompanyData {
   name: string
-  emailDomain: string
 }
 
 export interface ICompanyRepository {

@@ -2,11 +2,12 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-d
 import { useAccessResolution } from '@/application/hooks/useAccessResolution'
 import { AppLayout } from '@/presentation/layouts/AppLayout'
 import { AccessNotConfigured } from '@/presentation/pages/AccessNotConfigured'
-import { AdminPage } from '@/presentation/pages/AdminPage'
-import { AdminProjectsDashboard } from '@/presentation/pages/AdminProjectsDashboard'
+import { CompaniesDashboard } from '@/presentation/pages/CompaniesDashboard'
+import { CompanyBugQueue } from '@/presentation/pages/CompanyBugQueue'
 import { CompanyDashboard } from '@/presentation/pages/CompanyDashboard'
 import { Login } from '@/presentation/pages/Login'
 import { ProjectSelection } from '@/presentation/pages/ProjectSelection'
+import { SettingsPage } from '@/presentation/pages/SettingsPage'
 
 function RootRedirect() {
   const { state } = useAccessResolution()
@@ -17,8 +18,8 @@ function RootRedirect() {
   if (state.status === 'logged_out') {
     return <Navigate to="/login" replace />
   }
-  if (state.resolution.type === 'admin') {
-    return <Navigate to="/admin/projetos" replace />
+  if (state.resolution.type === 'admin' || state.resolution.type === 'dev') {
+    return <Navigate to="/empresas" replace />
   }
   if (state.resolution.type === 'company') {
     return <Navigate to="/projetos" replace />
@@ -35,8 +36,9 @@ function App() {
           <Route index element={<RootRedirect />} />
           <Route path="/projetos" element={<ProjectSelection />} />
           <Route path="/dashboard/:projectId" element={<CompanyDashboard />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/admin/projetos" element={<AdminProjectsDashboard />} />
+          <Route path="/configuracoes" element={<SettingsPage />} />
+          <Route path="/empresas" element={<CompaniesDashboard />} />
+          <Route path="/empresas/:companyId" element={<CompanyBugQueue />} />
           <Route path="/acesso-nao-configurado" element={<AccessNotConfigured />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

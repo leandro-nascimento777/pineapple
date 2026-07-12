@@ -9,7 +9,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { resolveBugSchema, type ResolveBugFormValues } from '@/shared/schemas/bug.schema'
+import { Avatar } from './Avatar'
 import { BugStatusBadge } from './BugCard'
+import { STATUS_CARD_CLASSES } from './bugStatusStyles'
 
 function BugAnexoThumbnail({ storagePath }: { storagePath: string }) {
   const { data: url, isLoading } = useBugAnexoUrl(storagePath)
@@ -27,12 +29,12 @@ function BugAnexoThumbnail({ storagePath }: { storagePath: string }) {
 
 interface BugDetailProps {
   bug: Bug
-  isAdmin: boolean
+  canManage: boolean
   currentUserId: string
   onBack: () => void
 }
 
-export function BugDetail({ bug, isAdmin, currentUserId, onBack }: BugDetailProps) {
+export function BugDetail({ bug, canManage, currentUserId, onBack }: BugDetailProps) {
   const assumeBug = useAssumeBug()
   const resolveBug = useResolveBug()
   const {
@@ -44,15 +46,15 @@ export function BugDetail({ bug, isAdmin, currentUserId, onBack }: BugDetailProp
     defaultValues: { parecer: bug.parecer ?? '' },
   })
 
-  const canAssume = isAdmin && bug.status === 'aberto'
-  const canResolve = isAdmin && bug.status === 'em_tratamento'
+  const canAssume = canManage && bug.status === 'aberto'
+  const canResolve = canManage && bug.status === 'em_tratamento'
 
   async function onSubmit(values: ResolveBugFormValues) {
     await resolveBug.mutateAsync({ bugId: bug.id, parecer: values.parecer, resolvidoPor: currentUserId })
   }
 
   return (
-    <Card>
+    <Card className={STATUS_CARD_CLASSES[bug.status]}>
       <CardHeader className="space-y-3">
         <Button variant="ghost" size="sm" onClick={onBack} className="w-fit px-0">
           ← Voltar
@@ -61,10 +63,20 @@ export function BugDetail({ bug, isAdmin, currentUserId, onBack }: BugDetailProp
           <CardTitle>{bug.titulo}</CardTitle>
           <BugStatusBadge status={bug.status} />
         </div>
-        <CardDescription>Setor: {bug.setorNome}</CardDescription>
+        <CardDescription>
+          Setor: {bug.setorNome}
+          {bug.projectName ? ` · Projeto: ${bug.projectName}` : ''}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="whitespace-pre-wrap text-sm">{bug.descricao}</p>
+
+        {bug.assumidoPorNome && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Avatar label={bug.assumidoPorNome} />
+            <span>Assumido por {bug.assumidoPorNome}</span>
+          </div>
+        )}
 
         {bug.anexos.length > 0 && (
           <div className="space-y-2">
@@ -89,7 +101,10 @@ export function BugDetail({ bug, isAdmin, currentUserId, onBack }: BugDetailProp
             {assumeBug.isError && (
               <p className="text-sm text-destructive">Erro ao assumir o bug. Tente novamente.</p>
             )}
-            <Button onClick={() => assumeBug.mutate(bug.id)} disabled={assumeBug.isPending}>
+            <Button
+              onClick={() => assumeBug.mutate({ bugId: bug.id, assumidoPor: currentUserId })}
+              disabled={assumeBug.isPending}
+            >
               {assumeBug.isPending ? 'Assumindo...' : 'Assumir bug'}
             </Button>
           </div>

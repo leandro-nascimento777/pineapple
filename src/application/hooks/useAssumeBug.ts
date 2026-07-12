@@ -5,9 +5,11 @@ export function useAssumeBug() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (bugId: string) => assumeBug.execute(bugId),
+    mutationFn: ({ bugId, assumidoPor }: { bugId: string; assumidoPor: string }) =>
+      assumeBug.execute(bugId, assumidoPor),
     onSuccess: (bug) => {
       queryClient.invalidateQueries({ queryKey: ['bugs', bug.projectId] })
+      queryClient.invalidateQueries({ queryKey: ['bugs-by-company'] })
     },
   })
 }

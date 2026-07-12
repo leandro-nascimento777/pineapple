@@ -18,6 +18,7 @@ interface BugAnexoRow {
 interface BugRow {
   id: string
   project_id: string
+  projects: { name: string } | null
   titulo: string
   descricao: string
   setor_id: string
@@ -25,13 +26,17 @@ interface BugRow {
   status: BugStatus
   parecer: string | null
   criado_por: string
+  assumido_por: string | null
+  assumido_por_profile: { name: string } | null
   resolvido_por: string | null
   created_at: string
   resolved_at: string | null
   bug_anexos: BugAnexoRow[] | null
 }
 
-const BUG_SELECT = '*, setores(name), bug_anexos(*)'
+const BUG_SELECT = '*, setores(name), projects(name), assumido_por_profile:profiles(name), bug_anexos(*)'
+const BUG_SELECT_BY_COMPANY =
+  '*, setores(name), projects!inner(name, company_id), assumido_por_profile:profiles(name), bug_anexos(*)'
 
 function mapAnexo(row: BugAnexoRow): BugAnexo {
   return { id: row.id, bugId: row.bug_id, storagePath: row.storage_path, createdAt: row.created_at }
@@ -41,6 +46,7 @@ function mapBug(row: BugRow): Bug {
   return {
     id: row.id,
     projectId: row.project_id,
+    projectName: row.projects?.name ?? '',
     titulo: row.titulo,
     descricao: row.descricao,
     setorId: row.setor_id,
@@ -48,6 +54,8 @@ function mapBug(row: BugRow): Bug {
     status: row.status,
     parecer: row.parecer,
     criadoPor: row.criado_por,
+    assumidoPor: row.assumido_por,
+    assumidoPorNome: row.assumido_por_profile?.name ?? null,
     resolvidoPor: row.resolvido_por,
     createdAt: row.created_at,
     resolvedAt: row.resolved_at,
@@ -83,19 +91,19 @@ export class SupabaseBugRepository implements IBugRepository {
       return this.getById(inserted.id)
     }
 
-    return mapBug(inserted as BugRow)
+    return mapBug(inserted as unknown as BugRow)
   }
 
-  async assume(bugId: string): Promise<Bug> {
+  async assume(bugId: string, assumidoPor: string): Promise<Bug> {
     const { data: updated, error } = await supabase
       .from('bugs')
-      .update({ status: 'em_tratamento' satisfies BugStatus })
+      .update({ status: 'em_tratamento' satisfies BugStatus, assumido_por: assumidoPor })
       .eq('id', bugId)
       .select(BUG_SELECT)
       .single()
 
     if (error) throw error
-    return mapBug(updated as BugRow)
+    return mapBug(updated as unknown as BugRow)
   }
 
   async resolve(data: ResolveBugData): Promise<Bug> {
@@ -112,7 +120,7 @@ export class SupabaseBugRepository implements IBugRepository {
       .single()
 
     if (error) throw error
-    return mapBug(updated as BugRow)
+    return mapBug(updated as unknown as BugRow)
   }
 
   async listByProject(projectId: string): Promise<Bug[]> {
@@ -123,7 +131,18 @@ export class SupabaseBugRepository implements IBugRepository {
       .order('created_at', { ascending: false })
 
     if (error) throw error
-    return (data as BugRow[]).map(mapBug)
+    return (data as unknown as BugRow[]).map(mapBug)
+  }
+
+  async listByCompany(companyId: string): Promise<Bug[]> {
+    const { data, error } = await supabase
+      .from('bugs')
+      .select(BUG_SELECT_BY_COMPANY)
+      .eq('projects.company_id', companyId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return (data as unknown as BugRow[]).map(mapBug)
   }
 
   subscribeToChanges(params: SubscribeToChangesParams, onChange: (bug: Bug) => void): () => void {
@@ -133,6 +152,6 @@ export class SupabaseBugRepository implements IBugRepository {
   private async getById(bugId: string): Promise<Bug> {
     const { data, error } = await supabase.from('bugs').select(BUG_SELECT).eq('id', bugId).single()
     if (error) throw error
-    return mapBug(data as BugRow)
+    return mapBug(data as unknown as BugRow)
   }
 }

@@ -23,7 +23,7 @@ export function BugForm({ projectId, companyId, criadoPor, onCreated }: BugFormP
     control,
     reset,
     formState: { errors },
-  } = useForm<BugFormValues>({ resolver: zodResolver(bugFormSchema) })
+  } = useForm<BugFormValues>({ resolver: zodResolver(bugFormSchema), defaultValues: { setorId: '' } })
   const createBug = useCreateBug()
   const { data: setores } = useSetores(companyId)
 

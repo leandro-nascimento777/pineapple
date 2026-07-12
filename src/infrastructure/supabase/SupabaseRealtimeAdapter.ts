@@ -12,16 +12,18 @@ interface BugRow {
   status: BugStatus
   parecer: string | null
   criado_por: string
+  assumido_por: string | null
   resolvido_por: string | null
   created_at: string
   resolved_at: string | null
 }
 
-/** O payload de realtime não traz bug_anexos nem o nome do setor (sem join); quem consome deve refazer a query se precisar deles. */
+/** O payload de realtime não traz bug_anexos nem os nomes de setor/projeto/quem assumiu (sem join); quem consome deve refazer a query se precisar deles. */
 function mapBugRow(row: BugRow): Bug {
   return {
     id: row.id,
     projectId: row.project_id,
+    projectName: '',
     titulo: row.titulo,
     descricao: row.descricao,
     setorId: row.setor_id,
@@ -29,6 +31,8 @@ function mapBugRow(row: BugRow): Bug {
     status: row.status,
     parecer: row.parecer,
     criadoPor: row.criado_por,
+    assumidoPor: row.assumido_por,
+    assumidoPorNome: null,
     resolvidoPor: row.resolvido_por,
     createdAt: row.created_at,
     resolvedAt: row.resolved_at,

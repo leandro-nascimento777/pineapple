@@ -1,21 +1,16 @@
 import type { Bug, BugStatus } from '@/domain/entities/Bug'
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
-const STATUS_LABEL: Record<BugStatus, string> = {
-  aberto: 'Em fila',
-  em_tratamento: 'Em análise',
-  resolvido: 'Resolvido',
-}
-
-const STATUS_VARIANT: Record<BugStatus, 'destructive' | 'default' | 'secondary'> = {
-  aberto: 'destructive',
-  em_tratamento: 'default',
-  resolvido: 'secondary',
-}
+import { Avatar } from './Avatar'
+import { STATUS_BADGE_CLASSES, STATUS_CARD_CLASSES, STATUS_LABEL } from './bugStatusStyles'
 
 export function BugStatusBadge({ status }: { status: BugStatus }) {
-  return <Badge variant={STATUS_VARIANT[status]}>{STATUS_LABEL[status]}</Badge>
+  return (
+    <Badge variant="outline" className={STATUS_BADGE_CLASSES[status]}>
+      {STATUS_LABEL[status]}
+    </Badge>
+  )
 }
 
 interface BugCardProps {
@@ -25,16 +20,25 @@ interface BugCardProps {
 
 export function BugCard({ bug, onClick }: BugCardProps) {
   return (
-    <Card onClick={onClick} className="cursor-pointer transition hover:shadow-md">
+    <Card
+      onClick={onClick}
+      className={cn('cursor-pointer transition hover:shadow-md', STATUS_CARD_CLASSES[bug.status])}
+    >
       <CardHeader>
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base">{bug.titulo}</CardTitle>
-          <BugStatusBadge status={bug.status} />
-        </div>
-        <CardDescription>{bug.setorNome}</CardDescription>
+        <CardTitle className="text-base">{bug.titulo}</CardTitle>
+        <CardDescription>
+          {bug.projectName ? `${bug.projectName} · ` : ''}
+          {bug.setorNome}
+        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-3">
         <p className="line-clamp-2 text-sm text-muted-foreground">{bug.descricao}</p>
+        {bug.assumidoPorNome && (
+          <div className="flex items-center gap-2">
+            <Avatar label={bug.assumidoPorNome} />
+            <span className="text-xs text-muted-foreground">{bug.assumidoPorNome}</span>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

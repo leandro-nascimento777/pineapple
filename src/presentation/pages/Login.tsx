@@ -15,8 +15,8 @@ export function Login() {
 
   if (state.status === 'resolved') {
     const destination =
-      state.resolution.type === 'admin'
-        ? '/admin/projetos'
+      state.resolution.type === 'admin' || state.resolution.type === 'dev'
+        ? '/empresas'
         : state.resolution.type === 'company'
           ? '/projetos'
           : '/acesso-nao-configurado'

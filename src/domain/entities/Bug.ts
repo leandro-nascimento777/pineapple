@@ -10,6 +10,7 @@ export interface BugAnexo {
 export interface Bug {
   id: string
   projectId: string
+  projectName: string
   titulo: string
   descricao: string
   setorId: string
@@ -17,6 +18,8 @@ export interface Bug {
   status: BugStatus
   parecer: string | null
   criadoPor: string
+  assumidoPor: string | null
+  assumidoPorNome: string | null
   resolvidoPor: string | null
   createdAt: string
   resolvedAt: string | null

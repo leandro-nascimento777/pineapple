@@ -1,8 +1,6 @@
-export interface InviteUserData {
-  email: string
-  name: string
-  companyId: string
-}
+export type InviteUserData =
+  | { email: string; name: string; role: 'admin' | 'dev' }
+  | { email: string; name: string; role: 'user'; companyId: string; projectIds: string[] }
 
 export interface IUserInvitationGateway {
   invite(data: InviteUserData): Promise<{ userId: string }>

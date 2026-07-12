@@ -4,6 +4,7 @@ import type { IProfileRepository } from '../repositories/IProfileRepository'
 
 export type AccessResolution =
   | { type: 'admin' }
+  | { type: 'dev' }
   | { type: 'company'; company: Company }
   | { type: 'pending' }
 
@@ -25,6 +26,10 @@ export class ResolveAccessByProfile {
 
     if (profile.role === 'admin') {
       return { type: 'admin' }
+    }
+
+    if (profile.role === 'dev') {
+      return { type: 'dev' }
     }
 
     const company = profile.companyId ? await this.companyRepository.findById(profile.companyId) : null
