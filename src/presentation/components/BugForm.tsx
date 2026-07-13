@@ -85,7 +85,7 @@ export function BugForm({ projectId, companyId, criadoPor, onCreated }: BugFormP
         <Controller
           control={control}
           name="anexo"
-          render={({ field: { onChange, onBlur, name, ref } }) => (
+          render={({ field: { value, onChange, onBlur, name, ref } }) => (
             <div
               onDragOver={(e) => {
                 e.preventDefault()
@@ -99,7 +99,7 @@ export function BugForm({ projectId, companyId, criadoPor, onCreated }: BugFormP
                 if (file) onChange(file)
               }}
               className={cn(
-                'rounded-lg border border-dashed p-3 transition-colors',
+                'space-y-2 rounded-lg border border-dashed p-3 transition-colors',
                 isDraggingOverAnexo ? 'border-gold bg-gold/5' : 'border-hairline',
               )}
             >
@@ -113,6 +113,12 @@ export function BugForm({ projectId, companyId, criadoPor, onCreated }: BugFormP
                 onChange={(e) => onChange(e.target.files?.[0])}
                 className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-secondary-foreground"
               />
+              <p className="text-xs text-muted-foreground">
+                Arraste um arquivo aqui, ou clique acima para escolher.
+              </p>
+              {value && (
+                <p className="truncate text-xs font-medium text-gold">Selecionado: {value.name}</p>
+              )}
             </div>
           )}
         />

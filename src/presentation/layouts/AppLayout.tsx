@@ -1,38 +1,44 @@
-import { Building2, LogOut, Menu, Settings, X } from 'lucide-react'
-import { useState } from 'react'
+import { Building2, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Settings, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useAccessResolution, type AccessResolutionState } from '@/application/hooks/useAccessResolution'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/presentation/components/Avatar'
-import { PineappleLogo } from '@/presentation/components/PineappleLogo'
+import { PineappleIcon, PineappleLogo } from '@/presentation/components/PineappleLogo'
 import { SessionInfoBar } from '@/presentation/components/SessionInfoBar'
+
+const SIDEBAR_COLLAPSED_KEY = 'pineapple_sidebar_collapsed'
 
 function NavLink({
   to,
   label,
   icon: Icon,
   active,
+  collapsed,
   onNavigate,
 }: {
   to: string
   label: string
   icon: typeof Building2
   active: boolean
+  collapsed?: boolean
   onNavigate?: () => void
 }) {
   return (
     <Link
       to={to}
       onClick={onNavigate}
+      title={collapsed ? label : undefined}
       className={cn(
         'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-gold/25',
+        collapsed && 'justify-center px-0',
         active
           ? 'bg-sidebar-accent text-sidebar-accent-foreground'
           : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground',
       )}
     >
       <Icon className="size-4 shrink-0" />
-      {label}
+      {!collapsed && label}
     </Link>
   )
 }
@@ -40,10 +46,12 @@ function NavLink({
 function SidebarContent({
   state,
   signOut,
+  collapsed,
   onNavigate,
 }: {
   state: AccessResolutionState
   signOut: () => void
+  collapsed?: boolean
   onNavigate?: () => void
 }) {
   const location = useLocation()
@@ -56,7 +64,11 @@ function SidebarContent({
   return (
     <>
       <div className="hidden h-16 items-center px-5 md:flex">
-        <PineappleLogo className="h-8 w-auto" />
+        {collapsed ? (
+          <PineappleIcon variant="dark" className="mx-auto h-7 w-auto" />
+        ) : (
+          <PineappleLogo className="h-8 w-auto" />
+        )}
       </div>
 
       {resolved && (
@@ -67,6 +79,7 @@ function SidebarContent({
               label="Empresas"
               icon={Building2}
               active={location.pathname.startsWith('/empresas')}
+              collapsed={collapsed}
               onNavigate={onNavigate}
             />
           )}
@@ -76,6 +89,7 @@ function SidebarContent({
               label="Projetos"
               icon={Building2}
               active={location.pathname.startsWith('/projetos') || location.pathname.startsWith('/dashboard')}
+              collapsed={collapsed}
               onNavigate={onNavigate}
             />
           )}
@@ -85,6 +99,7 @@ function SidebarContent({
               label="Configurações"
               icon={Settings}
               active={location.pathname.startsWith('/configuracoes')}
+              collapsed={collapsed}
               onNavigate={onNavigate}
             />
           )}
@@ -94,16 +109,22 @@ function SidebarContent({
 
       {resolved && (
         <div className="space-y-2 border-t border-sidebar-border px-3 py-3">
-          <div className="flex items-center gap-2 px-1">
+          <div className={cn('flex items-center gap-2 px-1', collapsed && 'justify-center px-0')}>
             <Avatar label={state.session.user.email ?? '?'} />
-            <span className="truncate text-xs text-sidebar-foreground">{state.session.user.email}</span>
+            {!collapsed && (
+              <span className="truncate text-xs text-sidebar-foreground">{state.session.user.email}</span>
+            )}
           </div>
           <button
             onClick={() => signOut()}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground focus-visible:ring-3 focus-visible:ring-gold/25"
+            title={collapsed ? 'Sair' : undefined}
+            className={cn(
+              'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground focus-visible:ring-3 focus-visible:ring-gold/25',
+              collapsed && 'justify-center px-0',
+            )}
           >
             <LogOut className="size-4 shrink-0" />
-            Sair
+            {!collapsed && 'Sair'}
           </button>
         </div>
       )}
@@ -114,11 +135,33 @@ function SidebarContent({
 export function AppLayout() {
   const { state, signOut } = useAccessResolution()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    () => localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true',
+  )
+
+  useEffect(() => {
+    localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(sidebarCollapsed))
+  }, [sidebarCollapsed])
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-56 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex">
-        <SidebarContent state={state} signOut={signOut} />
+      <aside
+        className={cn(
+          'hidden shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex',
+          sidebarCollapsed ? 'w-16' : 'w-56',
+        )}
+      >
+        <SidebarContent state={state} signOut={signOut} collapsed={sidebarCollapsed} />
+        <div className="hidden justify-center border-t border-sidebar-border py-2 md:flex">
+          <button
+            type="button"
+            aria-label={sidebarCollapsed ? 'Expandir menu' : 'Recolher menu'}
+            onClick={() => setSidebarCollapsed((prev) => !prev)}
+            className="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent/60 focus-visible:ring-3 focus-visible:ring-gold/25"
+          >
+            {sidebarCollapsed ? <PanelLeftOpen className="size-4" /> : <PanelLeftClose className="size-4" />}
+          </button>
+        </div>
       </aside>
 
       <div className="flex min-h-screen flex-1 flex-col md:min-h-0">
