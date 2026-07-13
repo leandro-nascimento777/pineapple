@@ -25,11 +25,12 @@ Deno.serve(async (req) => {
     return json({ error: "Missing Authorization header" }, 401)
   }
 
-  let email: string, name: string, role: Role, companyId: string | undefined, projectIds: string[] | undefined
+  let email: string, name: string, password: string, role: Role, companyId: string | undefined, projectIds: string[] | undefined
   try {
     const body = await req.json()
     email = body.email
     name = body.name
+    password = body.password
     role = body.role
     companyId = body.companyId
     projectIds = body.projectIds
@@ -37,8 +38,11 @@ Deno.serve(async (req) => {
     return json({ error: "JSON inválido" }, 400)
   }
 
-  if (!email || !name || !role || !["admin", "dev", "user"].includes(role)) {
-    return json({ error: "email, name e role (admin|dev|user) são obrigatórios" }, 400)
+  if (!email || !name || !password || !role || !["admin", "dev", "user"].includes(role)) {
+    return json({ error: "email, name, password e role (admin|dev|user) são obrigatórios" }, 400)
+  }
+  if (password.length < 6) {
+    return json({ error: "A senha precisa ter pelo menos 6 caracteres" }, 400)
   }
   if (role === "user" && (!companyId || !projectIds || projectIds.length === 0)) {
     return json({ error: "usuário precisa de companyId e ao menos um projeto" }, 400)
@@ -61,9 +65,13 @@ Deno.serve(async (req) => {
   // client com service role: só ele pode chamar a Admin API de auth
   const adminClient = createClient(supabaseUrl, serviceRoleKey)
 
-  const { data: invited, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email)
+  const { data: invited, error: inviteError } = await adminClient.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  })
   if (inviteError || !invited.user) {
-    return json({ error: inviteError?.message ?? "Falha ao convidar usuário" }, inviteError?.status ?? 400)
+    return json({ error: inviteError?.message ?? "Falha ao criar usuário" }, inviteError?.status ?? 400)
   }
 
   // a linha em profiles já existe (criada pelo trigger on_auth_user_created

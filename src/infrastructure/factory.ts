@@ -16,6 +16,7 @@ import { ListProjectsByCompany } from '../domain/use-cases/ListProjectsByCompany
 import { ListSetoresByCompany } from '../domain/use-cases/ListSetoresByCompany'
 import { RemoveCompanyDomain } from '../domain/use-cases/RemoveCompanyDomain'
 import { ReplaceProfileProjectAccess } from '../domain/use-cases/ReplaceProfileProjectAccess'
+import { ResetUserPassword } from '../domain/use-cases/ResetUserPassword'
 import { ResolveAccessByProfile } from '../domain/use-cases/ResolveAccessByProfile'
 import { ResolveBug } from '../domain/use-cases/ResolveBug'
 import { SubscribeToBugUpdates } from '../domain/use-cases/SubscribeToBugUpdates'
@@ -29,6 +30,7 @@ import { SupabaseProjectRepository } from './supabase/SupabaseProjectRepository'
 import { SupabaseSetorRepository } from './supabase/SupabaseSetorRepository'
 import { SupabaseStorageRepository } from './supabase/SupabaseStorageRepository'
 import { SupabaseUserInvitationGateway } from './supabase/SupabaseUserInvitationGateway'
+import { SupabaseUserPasswordGateway } from './supabase/SupabaseUserPasswordGateway'
 
 const bugRepository = new SupabaseBugRepository()
 const companyRepository = new SupabaseCompanyRepository()
@@ -39,6 +41,7 @@ const projectRepository = new SupabaseProjectRepository()
 const setorRepository = new SupabaseSetorRepository()
 const storageRepository = new SupabaseStorageRepository()
 const userInvitationGateway = new SupabaseUserInvitationGateway()
+const userPasswordGateway = new SupabaseUserPasswordGateway()
 
 export const addCompanyDomain = new AddCompanyDomain(companyDomainRepository)
 export const assumeBug = new AssumeBug(bugRepository)
@@ -59,6 +62,7 @@ export const listProjectsByCompany = new ListProjectsByCompany(projectRepository
 export const listSetoresByCompany = new ListSetoresByCompany(setorRepository)
 export const removeCompanyDomain = new RemoveCompanyDomain(companyDomainRepository)
 export const replaceProfileProjectAccess = new ReplaceProfileProjectAccess(profileProjectRepository)
+export const resetUserPassword = new ResetUserPassword(userPasswordGateway)
 export const resolveAccessByProfile = new ResolveAccessByProfile(profileRepository, companyRepository)
 export const subscribeToBugUpdates = new SubscribeToBugUpdates(bugRepository)
 export const updateProfile = new UpdateProfile(profileRepository)

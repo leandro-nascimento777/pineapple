@@ -7,9 +7,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 export function Login() {
-  const { state, signInWithMagicLink } = useAccessResolution()
+  const { state, signInWithPassword } = useAccessResolution()
   const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
+  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -28,10 +28,9 @@ export function Login() {
     setError(null)
     setIsSubmitting(true)
     try {
-      await signInWithMagicLink(email)
-      setSent(true)
+      await signInWithPassword(email, password)
     } catch {
-      setError('Não foi possível enviar o link. Verifique o email e tente novamente.')
+      setError('Email ou senha incorretos.')
     } finally {
       setIsSubmitting(false)
     }
@@ -42,32 +41,39 @@ export function Login() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Entrar</CardTitle>
-          <CardDescription>Digite seu email para receber um link de acesso.</CardDescription>
+          <CardDescription>Digite seu email e senha para acessar.</CardDescription>
         </CardHeader>
         <CardContent>
-          {sent ? (
-            <p className="text-sm text-muted-foreground">
-              Enviamos um link mágico para <strong>{email}</strong>. Abra seu email para continuar.
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="voce@empresa.com"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Entrando...' : 'Entrar'}
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              Esqueceu a senha? Peça pro administrador redefinir.
             </p>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="voce@empresa.com"
-                />
-              </div>
-              {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Enviando...' : 'Enviar link mágico'}
-              </Button>
-            </form>
-          )}
+          </form>
         </CardContent>
       </Card>
     </div>

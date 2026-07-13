@@ -10,6 +10,7 @@ import type { Project } from '@/domain/entities/Project'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ResetPasswordControl } from './ResetPasswordControl'
 
 function ProjectCheckboxes({
   projects,
@@ -86,6 +87,7 @@ function CompanyUserRow({
         </Button>
       </div>
       <ProjectCheckboxes projects={projects} selected={selectedProjectIds} onToggle={toggleProject} />
+      <ResetPasswordControl profileId={profile.id} />
     </li>
   )
 }
@@ -101,6 +103,7 @@ export function CompanyUserManager({ companyId }: CompanyUserManagerProps) {
 
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+  const [password, setPassword] = useState('')
   const [inviteProjectIds, setInviteProjectIds] = useState<string[]>([])
 
   function toggleInviteProject(projectId: string) {
@@ -111,9 +114,10 @@ export function CompanyUserManager({ companyId }: CompanyUserManagerProps) {
 
   async function handleInvite(event: FormEvent) {
     event.preventDefault()
-    await inviteUser.mutateAsync({ email, name, role: 'user', companyId, projectIds: inviteProjectIds })
+    await inviteUser.mutateAsync({ email, name, password, role: 'user', companyId, projectIds: inviteProjectIds })
     setEmail('')
     setName('')
+    setPassword('')
     setInviteProjectIds([])
   }
 
@@ -137,6 +141,17 @@ export function CompanyUserManager({ companyId }: CompanyUserManagerProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="user-invite-password">Senha</Label>
+            <Input
+              id="user-invite-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
             />
           </div>
           <Button type="submit" disabled={inviteUser.isPending || inviteProjectIds.length === 0}>

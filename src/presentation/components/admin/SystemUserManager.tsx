@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ResetPasswordControl } from './ResetPasswordControl'
 
 type SystemRole = 'admin' | 'dev'
 
@@ -25,25 +26,28 @@ function SystemUserRow({ profile }: { profile: Profile }) {
   }
 
   return (
-    <li className="flex flex-wrap items-center justify-between gap-3 border-b py-2 last:border-0">
-      <div>
-        <p className="text-sm font-medium">{profile.name}</p>
-        <p className="text-xs text-muted-foreground">{ROLE_LABEL[profile.role === 'dev' ? 'dev' : 'admin']}</p>
+    <li className="space-y-2 border-b py-2 last:border-0">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-medium">{profile.name}</p>
+          <p className="text-xs text-muted-foreground">{ROLE_LABEL[profile.role === 'dev' ? 'dev' : 'admin']}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Select value={role} onValueChange={(value) => setRole(value as SystemRole)}>
+            <SelectTrigger className="w-28">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="dev">Dev</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button size="sm" onClick={handleSave} disabled={updateProfile.isPending}>
+            Salvar
+          </Button>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Select value={role} onValueChange={(value) => setRole(value as SystemRole)}>
-          <SelectTrigger className="w-28">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="admin">Admin</SelectItem>
-            <SelectItem value="dev">Dev</SelectItem>
-          </SelectContent>
-        </Select>
-        <Button size="sm" onClick={handleSave} disabled={updateProfile.isPending}>
-          Salvar
-        </Button>
-      </div>
+      <ResetPasswordControl profileId={profile.id} />
     </li>
   )
 }
@@ -54,15 +58,17 @@ export function SystemUserManager() {
 
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+  const [password, setPassword] = useState('')
   const [role, setRole] = useState<SystemRole>('dev')
 
   const systemUsers = (profiles ?? []).filter((p) => p.role === 'admin' || p.role === 'dev')
 
   async function handleInvite(event: FormEvent) {
     event.preventDefault()
-    await inviteUser.mutateAsync({ email, name, role })
+    await inviteUser.mutateAsync({ email, name, password, role })
     setEmail('')
     setName('')
+    setPassword('')
   }
 
   return (
@@ -84,6 +90,17 @@ export function SystemUserManager() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="system-invite-password">Senha</Label>
+            <Input
+              id="system-invite-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
             />
           </div>
           <div className="space-y-1.5">

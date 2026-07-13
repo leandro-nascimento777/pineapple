@@ -41,8 +41,8 @@ export function useAccessResolution() {
     }
   }, [])
 
-  async function signInWithMagicLink(email: string) {
-    const { error } = await supabase.auth.signInWithOtp({ email })
+  async function signInWithPassword(email: string, password: string) {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
   }
 
@@ -50,5 +50,5 @@ export function useAccessResolution() {
     await supabase.auth.signOut()
   }
 
-  return { state, signInWithMagicLink, signOut }
+  return { state, signInWithPassword, signOut }
 }
