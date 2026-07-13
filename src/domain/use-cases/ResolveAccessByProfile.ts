@@ -3,9 +3,9 @@ import type { ICompanyRepository } from '../repositories/ICompanyRepository'
 import type { IProfileRepository } from '../repositories/IProfileRepository'
 
 export type AccessResolution =
-  | { type: 'admin' }
-  | { type: 'dev' }
-  | { type: 'company'; company: Company }
+  | { type: 'admin'; name: string }
+  | { type: 'dev'; name: string }
+  | { type: 'company'; name: string; company: Company }
   | { type: 'pending' }
 
 export class ResolveAccessByProfile {
@@ -25,11 +25,11 @@ export class ResolveAccessByProfile {
     }
 
     if (profile.role === 'admin') {
-      return { type: 'admin' }
+      return { type: 'admin', name: profile.name }
     }
 
     if (profile.role === 'dev') {
-      return { type: 'dev' }
+      return { type: 'dev', name: profile.name }
     }
 
     const company = profile.companyId ? await this.companyRepository.findById(profile.companyId) : null
@@ -37,6 +37,6 @@ export class ResolveAccessByProfile {
       return { type: 'pending' }
     }
 
-    return { type: 'company', company }
+    return { type: 'company', name: profile.name, company }
   }
 }

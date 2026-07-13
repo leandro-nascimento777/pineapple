@@ -5,6 +5,7 @@ import { useAccessResolution, type AccessResolutionState } from '@/application/h
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/presentation/components/Avatar'
 import { PineappleLogo } from '@/presentation/components/PineappleLogo'
+import { SessionInfoBar } from '@/presentation/components/SessionInfoBar'
 
 function NavLink({
   to,
@@ -161,6 +162,7 @@ export function AppLayout() {
 
         <main className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">
+            <SessionInfoBar state={state} />
             <Outlet />
           </div>
         </main>
