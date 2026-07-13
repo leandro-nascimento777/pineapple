@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateBug } from '@/application/hooks/useCreateBug'
 import { useSetores } from '@/application/hooks/useSetores'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -26,6 +28,7 @@ export function BugForm({ projectId, companyId, criadoPor, onCreated }: BugFormP
   } = useForm<BugFormValues>({ resolver: zodResolver(bugFormSchema), defaultValues: { setorId: '' } })
   const createBug = useCreateBug()
   const { data: setores } = useSetores(companyId)
+  const [isDraggingOverAnexo, setIsDraggingOverAnexo] = useState(false)
 
   async function onSubmit(values: BugFormValues) {
     await createBug.mutateAsync({
@@ -83,16 +86,34 @@ export function BugForm({ projectId, companyId, criadoPor, onCreated }: BugFormP
           control={control}
           name="anexo"
           render={({ field: { onChange, onBlur, name, ref } }) => (
-            <input
-              id="anexo"
-              ref={ref}
-              name={name}
-              onBlur={onBlur}
-              type="file"
-              accept="image/*"
-              onChange={(e) => onChange(e.target.files?.[0])}
-              className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-secondary-foreground"
-            />
+            <div
+              onDragOver={(e) => {
+                e.preventDefault()
+                setIsDraggingOverAnexo(true)
+              }}
+              onDragLeave={() => setIsDraggingOverAnexo(false)}
+              onDrop={(e) => {
+                e.preventDefault()
+                setIsDraggingOverAnexo(false)
+                const file = e.dataTransfer.files?.[0]
+                if (file) onChange(file)
+              }}
+              className={cn(
+                'rounded-lg border border-dashed p-3 transition-colors',
+                isDraggingOverAnexo ? 'border-gold bg-gold/5' : 'border-hairline',
+              )}
+            >
+              <input
+                id="anexo"
+                ref={ref}
+                name={name}
+                onBlur={onBlur}
+                type="file"
+                accept="image/*"
+                onChange={(e) => onChange(e.target.files?.[0])}
+                className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-secondary-foreground"
+              />
+            </div>
           )}
         />
         {errors.anexo && <p className="text-sm text-destructive">{errors.anexo.message}</p>}

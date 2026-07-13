@@ -75,7 +75,7 @@ function CompanyUserRow({
   const isSaving = updateProfile.isPending || replaceAccess.isPending
 
   return (
-    <li className="space-y-2 border-b py-2 last:border-0">
+    <li className="space-y-2 rounded-lg border border-hairline bg-void/40 p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="text-sm font-medium">{profile.name}</p>
@@ -122,8 +122,8 @@ export function CompanyUserManager({ companyId }: CompanyUserManagerProps) {
   )
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleInvite} className="space-y-3">
+    <div className="space-y-6">
+      <form onSubmit={handleInvite} className="space-y-3 border-b border-hairline pb-6">
         <div className="flex flex-wrap items-end gap-3">
           <div className="space-y-1.5">
             <Label htmlFor="user-invite-name">Nome</Label>
@@ -157,7 +157,7 @@ export function CompanyUserManager({ companyId }: CompanyUserManagerProps) {
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Carregando...</p>
       ) : visibleProfiles.length > 0 ? (
-        <ul>
+        <ul className="space-y-2">
           {visibleProfiles.map((profile) => (
             <CompanyUserRow key={profile.id} profile={profile} projects={projects ?? []} companyId={companyId} />
           ))}

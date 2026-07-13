@@ -21,7 +21,7 @@ export function ProjectManager({ companyId }: ProjectManagerProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3">
         <div className="space-y-1.5">
           <Label htmlFor="project-name">Novo projeto</Label>

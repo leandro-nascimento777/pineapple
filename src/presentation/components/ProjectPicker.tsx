@@ -9,7 +9,10 @@ interface ProjectPickerProps {
 
 function ProjectCard({ project, onSelect }: { project: Project; onSelect: (project: Project) => void }) {
   return (
-    <Card onClick={() => onSelect(project)} className="cursor-pointer transition hover:shadow-md">
+    <Card
+      onClick={() => onSelect(project)}
+      className="cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-xl"
+    >
       <CardHeader>
         <CardTitle className="text-base">{project.name}</CardTitle>
       </CardHeader>

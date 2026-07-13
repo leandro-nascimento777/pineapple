@@ -5,14 +5,31 @@ import { cn } from "@/lib/utils"
 function Card({
   className,
   size = "default",
+  onClick,
+  onKeyDown,
+  role,
+  tabIndex,
   ...props
 }: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+  const isInteractive = Boolean(onClick)
   return (
     <div
       data-slot="card"
       data-size={size}
+      role={role ?? (isInteractive ? "button" : undefined)}
+      tabIndex={tabIndex ?? (isInteractive ? 0 : undefined)}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        onKeyDown?.(event)
+        if (isInteractive && !event.defaultPrevented && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault()
+          onClick?.(event as unknown as React.MouseEvent<HTMLDivElement>)
+        }
+      }}
       className={cn(
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl border border-border bg-card py-(--card-spacing) text-sm text-card-foreground shadow-lg shadow-black/20 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        isInteractive &&
+          "outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/25",
         className
       )}
       {...props}

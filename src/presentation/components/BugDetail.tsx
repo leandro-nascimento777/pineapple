@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { resolveBugSchema, type ResolveBugFormValues } from '@/shared/schemas/bug.schema'
+import { formatShortId, formatTimestamp } from '@/lib/format'
 import { Avatar } from './Avatar'
 import { BugStatusBadge } from './BugCard'
 import { STATUS_CARD_CLASSES } from './bugStatusStyles'
@@ -63,10 +64,16 @@ export function BugDetail({ bug, canManage, currentUserId, onBack }: BugDetailPr
           <CardTitle>{bug.titulo}</CardTitle>
           <BugStatusBadge status={bug.status} />
         </div>
-        <CardDescription>
-          Setor: {bug.setorNome}
-          {bug.projectName ? ` · Projeto: ${bug.projectName}` : ''}
+        <CardDescription className="flex flex-wrap items-center gap-2">
+          <span className="rounded border border-hairline bg-panel px-1.5 py-0.5 font-mono text-[11px] text-dim">
+            {bug.setorNome}
+          </span>
+          {bug.projectName && <span>{bug.projectName}</span>}
         </CardDescription>
+        <div className="flex items-center gap-3 font-mono text-[11px] text-dim">
+          <span>#{formatShortId(bug.id)}</span>
+          <span>{formatTimestamp(bug.createdAt)}</span>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="whitespace-pre-wrap text-sm">{bug.descricao}</p>

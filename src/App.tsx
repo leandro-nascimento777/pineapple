@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { useAccessResolution } from '@/application/hooks/useAccessResolution'
 import { AppLayout } from '@/presentation/layouts/AppLayout'
+import { SplashScreen } from '@/presentation/components/SplashScreen'
 import { AccessNotConfigured } from '@/presentation/pages/AccessNotConfigured'
 import { CompaniesDashboard } from '@/presentation/pages/CompaniesDashboard'
 import { CompanyBugQueue } from '@/presentation/pages/CompanyBugQueue'
@@ -8,6 +10,14 @@ import { CompanyDashboard } from '@/presentation/pages/CompanyDashboard'
 import { Login } from '@/presentation/pages/Login'
 import { ProjectSelection } from '@/presentation/pages/ProjectSelection'
 import { SettingsPage } from '@/presentation/pages/SettingsPage'
+
+const SPLASH_SESSION_KEY = 'pineapple_splash_shown'
+
+function shouldShowSplash() {
+  const alreadyShown = sessionStorage.getItem(SPLASH_SESSION_KEY) === 'true'
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return !alreadyShown && !reducedMotion
+}
 
 function RootRedirect() {
   const { state } = useAccessResolution()
@@ -28,6 +38,19 @@ function RootRedirect() {
 }
 
 function App() {
+  const [showSplash, setShowSplash] = useState(shouldShowSplash)
+
+  if (showSplash) {
+    return (
+      <SplashScreen
+        onFinish={() => {
+          sessionStorage.setItem(SPLASH_SESSION_KEY, 'true')
+          setShowSplash(false)
+        }}
+      />
+    )
+  }
+
   return (
     <Router>
       <Routes>

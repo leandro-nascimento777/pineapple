@@ -31,7 +31,7 @@ export function CompaniesDashboard() {
             <Card
               key={company.id}
               onClick={() => navigate(`/empresas/${company.id}`)}
-              className="cursor-pointer transition hover:shadow-md"
+              className="cursor-pointer transition-all duration-150 hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-xl"
             >
               <CardHeader>
                 <CardTitle className="text-base">{company.name}</CardTitle>

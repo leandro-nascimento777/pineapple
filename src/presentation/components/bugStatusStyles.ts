@@ -6,22 +6,22 @@ export const STATUS_LABEL: Record<BugStatus, string> = {
   resolvido: 'Resolvido',
 }
 
-export const STATUS_BADGE_CLASSES: Record<BugStatus, string> = {
-  aberto: 'border-border bg-muted text-foreground',
-  em_tratamento:
-    'border-amber-200 bg-amber-100 text-amber-900 dark:border-amber-900/50 dark:bg-amber-900/30 dark:text-amber-300',
-  resolvido:
-    'border-emerald-200 bg-emerald-100 text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-900/30 dark:text-emerald-300',
+/** cor de sinal por status: vermelho = urgente/aberto, dourado = em andamento, verde = resolvido. */
+export const STATUS_SIGNAL_CLASSES: Record<BugStatus, string> = {
+  aberto: 'text-signal-red shadow-[0_0_8px_rgba(255,107,107,0.45)]',
+  em_tratamento: 'text-gold shadow-[0_0_8px_rgba(231,180,74,0.45)]',
+  resolvido: 'text-signal-green shadow-[0_0_8px_rgba(53,211,153,0.45)]',
 }
 
 export const STATUS_CARD_CLASSES: Record<BugStatus, string> = {
-  aberto: 'border-t-4 border-t-slate-400 dark:border-t-slate-500',
-  em_tratamento: 'border-t-4 border-t-amber-400',
-  resolvido: 'border-t-4 border-t-emerald-500',
+  aberto: 'border-t-4 border-t-signal-red/70',
+  em_tratamento: 'border-t-4 border-t-gold',
+  resolvido: 'border-t-4 border-t-signal-green',
 }
 
-export const COLUMN_HEADER_CLASSES: Record<BugStatus, string> = {
-  aberto: 'bg-slate-600',
-  em_tratamento: 'bg-amber-500',
-  resolvido: 'bg-emerald-600',
+/** cabeçalho de coluna do board: painel escuro + friso inferior colorido, ao invés de bloco sólido saturado (mais alinhado ao visual escuro/premium). */
+export const COLUMN_ACCENT_CLASSES: Record<BugStatus, string> = {
+  aberto: 'border-signal-red text-signal-red',
+  em_tratamento: 'border-gold text-gold',
+  resolvido: 'border-signal-green text-signal-green',
 }

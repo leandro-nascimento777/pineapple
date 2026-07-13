@@ -1,119 +1,77 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@fontsource-variable/manrope";
+@import "@fontsource/chakra-petch/400.css";
+@import "@fontsource/chakra-petch/500.css";
+@import "@fontsource/chakra-petch/600.css";
+@import "@fontsource/chakra-petch/700.css";
+@import "@fontsource-variable/jetbrains-mono";
 
-/* Selawik: substituto aberto (SIL OFL) da Segoe UI, oficial da Microsoft —
-   a Segoe UI em si é proprietária e não pode ser redistribuída no bundle. */
-@font-face {
-  font-family: 'Selawik';
-  src: url('/fonts/selawik/selawkl.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Selawik';
-  src: url('/fonts/selawik/selawksl.woff2') format('woff2');
-  font-weight: 350;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Selawik';
-  src: url('/fonts/selawik/selawk.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Selawik';
-  src: url('/fonts/selawik/selawksb.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Selawik';
-  src: url('/fonts/selawik/selawkb.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
+/* mantido inerte de propósito: nada aplica a classe .dark hoje, então
+   qualquer utilitário dark: existente fica sem efeito até ser substituído. */
 @custom-variant dark (&:is(.dark *));
 
+/* Tokens de marca Pineapple — visual escuro/premium (dourado/preto), tema único. */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.972 0.002 264);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.546 0.215 262.881);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.914 0.003 264);
-  --input: oklch(0.914 0.003 264);
-  --ring: oklch(0.623 0.19 259.815);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0.01 264);
-  --sidebar-foreground: oklch(0.85 0.01 264);
-  --sidebar-primary: oklch(0.623 0.19 259.815);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.28 0.015 264);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.623 0.19 259.815);
-}
+  --bg-void: #0a0c10;
+  --bg-panel: #14171f;
+  --border-hairline: #262b36;
+  --gold: #e7b44a;
+  --gold-glow: #ffd98a;
+  --signal-green: #35d399;
+  --signal-red: #ff6b6b;
+  --text-primary: #f2efe6;
+  --text-muted: #8b90a0;
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.623 0.19 259.815);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.623 0.19 259.815);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.16 0.008 264);
-  --sidebar-foreground: oklch(0.85 0.01 264);
-  --sidebar-primary: oklch(0.623 0.19 259.815);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.24 0.014 264);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.623 0.19 259.815);
+  --radius: 0.75rem;
+  --background: var(--bg-void);
+  --foreground: var(--text-primary);
+  --card: var(--bg-panel);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-panel);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--gold);
+  --primary-foreground: var(--bg-void);
+  --secondary: #1a1d26;
+  --secondary-foreground: var(--text-primary);
+  --muted: #1a1d26;
+  --muted-foreground: var(--text-muted);
+  --accent: #1c1f2a;
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--signal-red);
+  --border: var(--border-hairline);
+  --input: var(--border-hairline);
+  --ring: var(--gold);
+  --chart-1: var(--gold);
+  --chart-2: var(--signal-green);
+  --chart-3: var(--signal-red);
+  --chart-4: var(--gold-glow);
+  --chart-5: var(--text-muted);
+  --sidebar: var(--bg-void);
+  --sidebar-foreground: var(--text-muted);
+  --sidebar-primary: var(--gold);
+  --sidebar-primary-foreground: var(--bg-void);
+  --sidebar-accent: var(--bg-panel);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border-hairline);
+  --sidebar-ring: var(--gold);
 }
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: 'Segoe UI', Selawik, system-ui, sans-serif;
+  --font-sans: 'Manrope Variable', sans-serif;
+  --font-display: 'Chakra Petch', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', monospace;
+  --color-void: var(--bg-void);
+  --color-panel: var(--bg-panel);
+  --color-hairline: var(--border-hairline);
+  --color-gold: var(--gold);
+  --color-gold-glow: var(--gold-glow);
+  --color-signal-green: var(--signal-green);
+  --color-signal-red: var(--signal-red);
+  --color-ink: var(--text-primary);
+  --color-dim: var(--text-muted);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -160,8 +118,111 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: radial-gradient(circle at 20% 0%, rgba(231, 180, 74, 0.08), transparent 60%);
+    background-repeat: no-repeat;
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* SplashScreen — animações dedicadas (Step 4 do restyle) */
+@layer utilities {
+  @keyframes splash-icon-in {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes splash-glow-pulse {
+    0%,
+    100% {
+      filter: drop-shadow(0 0 6px rgba(231, 180, 74, 0.35));
+    }
+    50% {
+      filter: drop-shadow(0 0 26px rgba(231, 180, 74, 0.75));
+    }
+  }
+  @keyframes splash-typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  @keyframes splash-caret-blink {
+    0%,
+    100% {
+      border-color: transparent;
+    }
+    50% {
+      border-color: var(--gold);
+    }
+  }
+  @keyframes splash-scanline {
+    from {
+      transform: translateY(-120%);
+    }
+    to {
+      transform: translateY(220%);
+    }
+  }
+  @keyframes splash-wordmark-reveal {
+    from {
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      opacity: 1;
+    }
+  }
+  @keyframes splash-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  .splash-icon {
+    animation:
+      splash-icon-in 700ms ease-out both,
+      splash-glow-pulse 1800ms ease-in-out 700ms infinite;
+  }
+  .splash-typewriter {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid var(--gold);
+    width: 0;
+    animation:
+      splash-typing 1200ms steps(32, end) both,
+      splash-caret-blink 500ms step-end infinite;
+  }
+  .splash-scanline {
+    animation: splash-scanline 500ms linear 2;
+  }
+  .splash-wordmark {
+    animation: splash-wordmark-reveal 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .splash-fade-out {
+    animation: splash-fade-out 600ms ease-in both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .splash-icon,
+    .splash-typewriter,
+    .splash-scanline,
+    .splash-wordmark,
+    .splash-fade-out {
+      animation: none;
+    }
   }
 }
