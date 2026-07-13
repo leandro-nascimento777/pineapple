@@ -9,6 +9,7 @@ export function useResolveBug() {
     mutationFn: (input: ResolveBugInput) => resolveBug.execute(input),
     onSuccess: (bug) => {
       queryClient.invalidateQueries({ queryKey: ['bugs', bug.projectId] })
+      queryClient.invalidateQueries({ queryKey: ['bugs-by-company'] })
     },
   })
 }
